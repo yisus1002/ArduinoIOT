@@ -11,8 +11,8 @@
 
 #include <stdlib.h>
 
-const char* ssid = "ssid";
-const char* password = "password";
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 
 // Definir propiedades NTP
 #define NTP_OFFSET   60 * 60                                                                                               // En segundos
@@ -61,7 +61,7 @@ void setup() {
 
   WiFi.begin(ssid, password);
   digitalWrite(pin_cuatro, HIGH);
-  delay(30000);
+  delay(3000);
   digitalWrite(pin_cuatro, LOW);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -99,6 +99,13 @@ void loop() {
             int httpCode = https.GET();
 
             String payload = https.getString();
+            if (httpCode < 0) {
+                       Serial.printf("[HTTPS] GET... code: %d\n", httpCode);
+                        digitalWrite(pin_cuatro, LOW);
+                        https.end();
+                        return;
+            }
+            
             JSONVar myObject = JSON.parse(payload.c_str()); 
            
               activo   = myObject[0]["activo"];
@@ -179,6 +186,7 @@ void loop() {
           } else {
             Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
                             digitalWrite(pin_cuatro, HIGH);
+                            https.end();
         // Serial.printf("[HTTPS] ", https.errorToString(httpCode));
       }
 
@@ -193,7 +201,7 @@ void loop() {
 
 
   Serial.println("Wait before next round...");
-  delay(3000);  
+  delay(4000);  
 }
 
 void apagar_timbre(HTTPClient &httpss) {
