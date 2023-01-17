@@ -11,8 +11,8 @@
 
 #include <stdlib.h>
 
-const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* ssid = "JDGH";
+const char* password = "1066508343@";
 
 // Definir propiedades NTP
 #define NTP_OFFSET   60 * 60                                                                                               // En segundos
@@ -67,6 +67,7 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     digitalWrite(pin_cuatro, HIGH);
     delay(500);
+  WiFi.begin(ssid, password);
     rec=rec+1;
     Serial.println("Connecting to WiFi..");
     // Serial.println(rec);
@@ -101,8 +102,11 @@ void loop() {
             String payload = https.getString();
             if (httpCode < 0) {
                        Serial.printf("[HTTPS] GET... code: %d\n", httpCode);
-                        digitalWrite(pin_cuatro, LOW);
+                        digitalWrite(pin_cuatro, HIGH);
                         https.end();
+                        if (WiFi.status() != WL_CONNECTED){
+                        WiFi.begin(ssid, password);
+                        }
                         return;
             }
             
